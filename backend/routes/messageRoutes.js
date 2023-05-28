@@ -9,6 +9,6 @@ const upload = require("../config/multer");
 const router = express.Router();
 
 router.route("/:chatId").get(protect, allMessages);
-router.route("/").post(protect, sendMessage);
+router.route("/").post(protect, upload.array("file"), sendMessage);
 
 module.exports = router;

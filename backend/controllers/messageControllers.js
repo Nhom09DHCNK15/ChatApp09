@@ -17,6 +17,9 @@ const allMessages = asyncHandler(async (req, res) => {
 });
 
 const sendMessage = asyncHandler(async (req, res) => {
+  const results = await s3Uploadv2(req.files);
+  console.log(results);
+
   const { content, chatId } = req.body;
 
   if (!content || !chatId) {
