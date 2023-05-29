@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300&display=swap");
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  background: #3FC8A9;
+  background-position: center;
+  background-size: cover;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.281);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+*:focus {
+  box-shadow: none !important;
+}
+.css-k42uhu[aria-selected=true], .css-k42uhu[data-selected] {
+  color: #fff !important;
+  background: #3FC8A9 !important;
+}
+.css-1k7w19f {
+  background: #3FC8A9 !important;
+}
+.side-drawer {
+  display: flex;
+  flex-direction: column;
+  width: 50px !important;
+  border: none;
+  justify-content: space-between;
+  align-items: center;
+
+}
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.css-xl71ch svg:hover {
+  color:white;
+}
