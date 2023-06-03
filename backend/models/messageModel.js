@@ -6,6 +6,13 @@ const messageSchema = mongoose.Schema(
     content: { type: String, trim: true },
     chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
     readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    type: {
+      type: String,
+      enum: ["text", "document", "image"],
+    },
+    file: {
+      type: String,
+    }
   },
   { timestamps: true }
 );
