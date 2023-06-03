@@ -104,6 +104,42 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  const sendFile = async (event) => {
+    const files = event.target.files;
+    const formData = new FormData();
+    formData.append('chatId', selectedChat._id);
+
+    for (const key of files) {
+      formData.append('file', key);
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "multipart/form-data",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      setNewMessage("");
+      const { data } = await axios.post(
+        "/api/message",
+        formData,
+        config
+      );
+      
+      socket.emit("new message", data);
+      setMessages([...messages, data]);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to send the Message",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+    }
+  };
+
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
@@ -123,9 +159,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
+      let chatId;
+      let sender;
+      if (Array.isArray(newMessageRecieved)) {
+        chatId = newMessageRecieved[0].chat._id;
+        sender = newMessageRecieved[0].sender._id;
+      } else {
+        chatId = newMessageRecieved.chat._id;
+        sender = newMessageRecieved.sender._id;
+      }
       if (
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
-        selectedChatCompare._id !== newMessageRecieved.chat._id
+        selectedChatCompare._id !== chatId
       ) {
         if (!notification.includes(newMessageRecieved)) {
           setNotification([newMessageRecieved, ...notification]);
@@ -181,14 +226,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               (!selectedChat.isGroupChat ? (
                 <>
                   <div>
-                  <Avatar
-                  mt="7px"
-                  mr={2}
-                  size="sm"
-                  cursor="pointer"
-                  src={getSenderFull(user, selectedChat.users).pic}
-                />
-                <b>{getSenderFull(user, selectedChat.users).name}</b>
+                    <Avatar
+                      mt="7px"
+                      mr={2}
+                      size="sm"
+                      cursor="pointer"
+                      src={getSenderFull(user, selectedChat.users).pic}
+                    />
+                    <b>{getSenderFull(user, selectedChat.users).name}</b>
                   </div>
                   <ProfileModal
                     user={getSenderFull(user, selectedChat.users)}
@@ -248,17 +293,22 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 <></>
               )}
-              <div style={{display:"flex", gap:"10px"}}>
-              <Input
-                pl={3}
-                variant="filled"
-                bg="#E0E0E0"
-                placeholder="Enter a message.."
-                value={newMessage}
-                onChange={typingHandler}
-              />
-              <button onClick={e => sendMessage(e)}><i className="fa fa-paper-plane" style={{color:"#3EC7A8",fontSize:"27px"}}></i></button>
-              <button><AttachmentIcon fontSize={25}/></button>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Input
+                  pl={3}
+                  variant="filled"
+                  bg="#E0E0E0"
+                  placeholder="Enter a message.."
+                  value={newMessage}
+                  onChange={typingHandler}
+                />
+                <button onClick={e => sendMessage(e)}><i className="fa fa-paper-plane" style={{ color: "#3EC7A8", fontSize: "27px" }}></i></button>
+                <button>
+                  <label>
+                    <AttachmentIcon fontSize={25} />
+                    <input type="file" name="file" multiple style={{ display: "none" }} onChange={e => sendFile(e)} />
+                  </label>
+                </button>
               </div>
             </FormControl>
           </Box>
