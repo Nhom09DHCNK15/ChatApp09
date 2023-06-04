@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { getSenderFull } from "../config/ChatLogics";
 import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
-import { Button } from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
 
 const MyChats = ({ fetchAgain }) => {
@@ -66,15 +66,14 @@ const MyChats = ({ fetchAgain }) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        My Chats
+        <span style={{color:"#3FC8A9", fontWeight:"bold"}}>ChatAPP09</span>
         <GroupChatModal>
-          <Button
-            d="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-            rightIcon={<AddIcon />}
-          >
-            New Group Chat
-          </Button>
+          <IconButton
+            background="#3FC8A9"
+            aria-label="Create A Group Chat"
+            icon={<AddIcon color="white"/>}
+            borderRadius="50rem"
+          />
         </GroupChatModal>
       </Box>
       <Box
@@ -101,11 +100,9 @@ const MyChats = ({ fetchAgain }) => {
                 fontSize={25}
                 key={chat._id}
               >
-                <div style={{display:"flex"}}>
-                  
-                    {!chat.isGroupChat
-                      ?
-                      <div>
+                <div style={{ display: "flex" }}>
+                  {!chat.isGroupChat ? (
+                    <div>
                       <Avatar
                         mt="7px"
                         mr={2}
@@ -114,13 +111,14 @@ const MyChats = ({ fetchAgain }) => {
                         src={getSenderFull(loggedUser, chat.users).pic}
                       />
                       <b>{getSenderFull(loggedUser, chat.users).name}</b>
-                      </div>
-                      : "Group: " + chat.chatName}
-                  
+                    </div>
+                  ) : (
+                    "Group: " + chat.chatName
+                  )}
                 </div>
                 {chat.latestMessage && (
                   <Text fontSize="xs" color="gray">
-                    <div style={{marginBottom:"5px"}}></div>
+                    <div style={{ marginBottom: "5px"}}></div>
                     <b>{chat.latestMessage.sender.name} : </b>
                     {chat.latestMessage.content.length > 50
                       ? chat.latestMessage.content.substring(0, 51) + "..."
