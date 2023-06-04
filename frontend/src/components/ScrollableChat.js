@@ -1,6 +1,7 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Tooltip } from "@chakra-ui/tooltip";
 import ScrollableFeed from "react-scrollable-feed";
+import { format } from 'date-fns';
 import {
   isLastMessage,
   isSameSender,
@@ -8,6 +9,7 @@ import {
   isSameUser,
 } from "../config/ChatLogics";
 import { ChatState } from "../Context/ChatProvider";
+import { Text } from "@chakra-ui/react";
 
 function Message({ message }) {
   if (message.type === "image") {
@@ -25,13 +27,14 @@ function Message({ message }) {
 }
 
 const ScrollableChat = ({ messages }) => {
+  console.log(messages);
   const { user } = ChatState();
   messages = messages.flat();
   return (
     <ScrollableFeed>
       {messages &&
         messages.map((m, i) => (
-          <div style={{ display: "flex" }} key={m._id}>
+          <div style={{ display: "flex"}} key={m._id}>
             {(isSameSender(messages, m, i, user._id) ||
               isLastMessage(messages, i, user._id)) && (
                 <Tooltip label={m.sender.name} placement="bottom-start" hasArrow>
@@ -58,6 +61,7 @@ const ScrollableChat = ({ messages }) => {
               }}
             >
               <Message message={m} />
+            <Text style={{color:"gray", textAlign:"right", fontSize:"0.8rem"}}>{format(new Date(m.createdAt), "dd/MM/yyyy HH:mm")}</Text>
             </span>
           </div>
         ))}
